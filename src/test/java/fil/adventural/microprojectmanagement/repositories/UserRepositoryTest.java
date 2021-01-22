@@ -1,5 +1,6 @@
 package fil.adventural.microprojectmanagement.repositories;
 
+import fil.adventural.microprojectmanagement.models.Project;
 import fil.adventural.microprojectmanagement.models.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @DataJpaTest
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -22,7 +24,7 @@ public class UserRepositoryTest {
     private TestEntityManager entityManager;
 
     @Test
-    public void testFindUserByUsername_WillReturnUserDetails() {
+    void testFindUserByUsername_WillReturnUserDetails() {
         String testUsername = "Doggy";
         entityManager.persistFlushFind(User.builder().username(testUsername).build());
         List<User> users = userRepository.findUserByUsername(testUsername);
@@ -32,7 +34,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindUserByEmail_WillReturnUserDetails() {
+    void testFindUserByEmail_WillReturnUserDetails() {
         String testEmail = "Doggy@gmail.com";
         entityManager.persistFlushFind(User.builder().email(testEmail).build());
         User user = userRepository.findUserByEmail(testEmail);

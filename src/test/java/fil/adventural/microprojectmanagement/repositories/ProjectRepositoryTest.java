@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @DataJpaTest
-public class ProjectRepositoryTest {
+class ProjectRepositoryTest {
     @Autowired
     private ProjectRepository projectRepository;
 
@@ -24,51 +25,48 @@ public class ProjectRepositoryTest {
 
     @Test
     void testFindByUserEmail_WillReturnAllProjectOfThatUser() {
-        User user = User.builder().email("test@gmail.com").isEnabled(true).build();
+        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
 
         entityManager.persist(user);
 
         Project project = Project.builder().title("test").isFavourite(true).members(Collections.singletonList(user)).build();
 
-        user.setProjects(Collections.singletonList(project));
+        user.getProjects().add(project);
 
-        entityManager.persist(project);
+        project = entityManager.persist(project);
 
-        assertThat(projectRepository.findProjectsByUserEmail("test@gmail.com")).isEqualTo(Collections.singletonList(project));
+        assertThat(projectRepository.findProjectsByUserEmail(user.getEmail())).isEqualTo(Collections.singletonList(project));
     }
 
 
     @Test
     void testFindByUserId_WillReturnAllProjectOfThatUser() {
-        User user = User.builder().email("test@gmail.com").isEnabled(true).build();
+        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
 
-        entityManager.persist(user);
+        user = entityManager.persist(user);
 
         Project project = Project.builder().title("test").isFavourite(true).members(Collections.singletonList(user)).build();
 
-        user.setProjects(Collections.singletonList(project));
+        user.getProjects().add(project);
 
-        entityManager.persist(project);
+        project = entityManager.persist(project);
 
-        project.setId(1L);
-
-        assertThat(projectRepository.findProjectsByUserId(1L)).isEqualTo(Collections.singletonList(project));
+        assertThat(projectRepository.findProjectsByUserId(user.getId())).isEqualTo(Collections.singletonList(project));
     }
 
     @Test
     void testFindProjectById_ByUserId_WillReturnAllProjectOfThatUser() {
-        User user = User.builder().email("test@gmail.com").isEnabled(true).build();
+        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
 
-        entityManager.persist(user);
+        user = entityManager.persist(user);
 
         Project project = Project.builder().title("test").isFavourite(true).members(Collections.singletonList(user)).build();
 
-        user.setProjects(Collections.singletonList(project));
+        user.getProjects().add(project);
 
-        entityManager.persist(project);
+        project = entityManager.persist(project);
 
-        project.setId(1L);
-
-        assertThat(projectRepository.findProjectById_ByUserId(1L, 1L)).isEqualTo(project);
+        assertThat(projectRepository.findProjectById_ByUserId(project.getId(), user.getId())).isEqualTo(project);
     }
+
 }

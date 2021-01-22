@@ -28,7 +28,7 @@ public class Task {
     @JoinColumn(name = "user_id", nullable = true)
     private User owner;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id", nullable = true)
     private Project project;
 }
