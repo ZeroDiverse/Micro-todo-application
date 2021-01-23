@@ -21,6 +21,9 @@ class ProjectRepositoryTest {
     private ProjectRepository projectRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TestEntityManager entityManager;
 
     @Test
@@ -67,6 +70,32 @@ class ProjectRepositoryTest {
         project = entityManager.persist(project);
 
         assertThat(projectRepository.findProjectById_ByUserId(project.getId(), user.getId())).isEqualTo(project);
+    }
+
+    @Test
+    void testAddMemberToProject() {
+        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
+
+        entityManager.persist(user);
+
+        User user1 = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
+
+        entityManager.persist(user1);
+
+        Project project = Project.builder().title("test").isFavourite(true).members(new ArrayList<>()).build();
+
+        project.addMember(user);
+
+        user.addProject(project);
+
+        project = entityManager.persist(project);
+
+        //Add the member to the project
+        user1.addProject(project);
+
+        projectRepository.save(project);
+
+        assertThat(userRepository.getOne(user1.getId()).getProjects()).contains(project);
     }
 
 }

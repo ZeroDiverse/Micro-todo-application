@@ -1,9 +1,6 @@
 package fil.adventural.microprojectmanagement.services;
 
-import fil.adventural.microprojectmanagement.exceptions.ProjectNotFoundException;
-import fil.adventural.microprojectmanagement.exceptions.UserAlreadyInProjectException;
-import fil.adventural.microprojectmanagement.exceptions.UserNotAllowedException;
-import fil.adventural.microprojectmanagement.exceptions.UserNotFoundException;
+import fil.adventural.microprojectmanagement.exceptions.*;
 import fil.adventural.microprojectmanagement.mappers.ProjectMapper;
 import fil.adventural.microprojectmanagement.mappers.UserMapper;
 import fil.adventural.microprojectmanagement.models.Project;
@@ -142,10 +139,8 @@ public class ProjectService {
             throw new UserAlreadyInProjectException();
         }
 
-
         //Add the member to the project
         projectFound.addMember(member);
-
 
         member.addProject(projectFound);
 
@@ -164,5 +159,39 @@ public class ProjectService {
         }
         projectRepository.deleteById(projectId);
         return true;
+    }
+
+    /**
+     * Remove member from project
+     * @param projectId project id
+     * @param userId user in the project
+     * @param userRemovedId user to be removed id
+     */
+    public void removeMemberFromProject(Long projectId, Long userId, Long userRemovedId) {
+        //Get the project
+        Project projectFound = projectRepository.getOne(projectId);
+
+        //Get the member
+        User user = userRepository.getOne(userId);
+
+        //check if user in the project
+
+        if(!projectFound.containsMember(user)){
+            throw new UserNotAllowedException();
+        }
+
+        User member = userRepository.getOne(userRemovedId);
+
+        if(!projectFound.containsMember(member)){
+            throw new UserNotInProjectException();
+        }
+
+        //Add the member to the project
+        projectFound.removeMember(member);
+
+        member.removeProject(projectFound);
+
+        //Save the project
+        projectRepository.save(projectFound);
     }
 }

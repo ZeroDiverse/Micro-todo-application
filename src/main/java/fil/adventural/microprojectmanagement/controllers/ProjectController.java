@@ -41,8 +41,13 @@ public class ProjectController {
 
     @PostMapping(value = {"/users/{userId}/addMember/projects/{projectId}", "/users/{userId}/addMember/projects/{projectId}/"})
     public ResponseEntity<Void> addMemberToProject(@PathVariable Long userId, @PathVariable Long projectId, @RequestBody UserRequest userRequest) {
-        System.out.println(userRequest);
         projectService.addMemberToProject(projectId, userId, userRequest.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = {"/users/{userId}/removeMember/projects/{projectId}", "/users/{userId}/addMember/projects/{projectId}/"})
+    public ResponseEntity<Void> removeMemberToProject(@PathVariable Long userId, @PathVariable Long projectId, @RequestBody UserRequest userRequest) {
+        projectService.removeMemberFromProject(projectId, userId, userRequest.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

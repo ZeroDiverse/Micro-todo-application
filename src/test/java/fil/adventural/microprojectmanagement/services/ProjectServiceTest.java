@@ -216,6 +216,32 @@ class ProjectServiceTest {
     }
 
     @Test
+    void testRemoveMemberForProject_WillNotHaveError_IfEverythingOk() {
+
+        project.setMembers(new ArrayList<>());
+
+        user.setProjects(new ArrayList<>());
+
+        project.addMember(user);
+
+        project.addMember(user1);
+
+        user.addProject(project);
+
+        given(projectRepository.getOne(anyLong())).willReturn(project);
+
+        //Get 2 user in 2 call from get one
+        given(userRepository.getOne(anyLong())).willReturn(user, user1);
+
+        projectService.removeMemberFromProject(project.getId(), user.getId(), user1.getId());
+
+        assertThat(project.getMembers()).doesNotContain(user1);
+
+        assertThat(user1.getProjects()).doesNotContain(project);
+
+    }
+
+    @Test
     void testDeleteProjectByProjectId_WillReturnTrue_IfProjectExists() {
         given(projectRepository.existsById(anyLong())).willReturn(true);
 

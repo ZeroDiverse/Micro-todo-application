@@ -175,6 +175,45 @@ class ProjectControllerTest {
 
 
     @Test
+    void testRemoveMemberToProject_WillReturnStatusOk_IfMemberWasAdded() throws Exception {
+        doNothing().when(projectService).removeMemberFromProject(1L, 1L, 2L);
+
+        mockMvc
+                .perform(post("/api/v1/users/1/removeMember/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(UserRequest.builder().id(2L).build())))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void testRemoveMemberToProject_WillReturnStatusNotAllow_IfUserIsNotAllowed() throws Exception {
+        doThrow(new UserNotAllowedException()).when(projectService).removeMemberFromProject(1L, 1L, 2L);
+
+        mockMvc
+                .perform(post("/api/v1/users/1/removeMember/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(UserRequest.builder().id(2L).build())))
+                .andExpect(status().is(HttpStatus.FORBIDDEN.value()))
+                .andReturn();
+    }
+
+    @Test
+    void testRemoveToProject_WillReturnStatusNotAcceptable_IfUserIsAlreadyInProject() throws Exception {
+        doThrow(new UserAlreadyInProjectException()).when(projectService).removeMemberFromProject(1L, 1L, 2L);
+
+        mockMvc
+                .perform(post("/api/v1/users/1/removeMember/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(UserRequest.builder().id(2L).build())))
+                .andExpect(status().is(HttpStatus.NOT_ACCEPTABLE.value()))
+                .andReturn();
+    }
+
+    @Test
     void testDeleteProjectById_WillReturnAStatusOfNoContent() throws Exception {
         given(projectService.deleteProjectById(anyLong())).willReturn(true);
 

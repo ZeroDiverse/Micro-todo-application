@@ -28,7 +28,7 @@ public class Project {
     @Enumerated(value = EnumType.STRING)
     private ProjectView projectView = ProjectView.LIST;
 
-    @ManyToMany(cascade = {CascadeType.ALL},
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST},
             mappedBy = "projects")
     private List<User> members = new ArrayList<>();
 
