@@ -5,22 +5,22 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserTest {
+ class UserTest {
 
-    private User user;
+     private User user;
 
-    @BeforeEach
-    public void init(){
-        user = new User();
-    }
+     @BeforeEach
+     public void init() {
+         user = new User();
+     }
 
-    @Test
-    public void testUser_HasZeroProjects_AtBeginning(){
-        assertThat(user.getProjects().size()).isEqualTo(0);
-    }
+     @Test
+     void testUser_HasZeroProjects_AtBeginning() {
+         assertThat(user.getProjects().size()).isEqualTo(0);
+     }
 
-    @Test
-    public void testUser_HasZeroTasks_AtBeginning(){
-        assertThat(user.getPersonalTasks().size()).isEqualTo(0);
-    }
+     @Test
+     void testUser_HasZeroTasks_AtBeginning() {
+         assertThat(user.getPersonalTasks().size()).isEqualTo(0);
+     }
 }

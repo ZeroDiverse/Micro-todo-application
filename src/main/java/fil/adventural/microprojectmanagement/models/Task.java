@@ -24,11 +24,11 @@ public class Task {
     private boolean isPersonal;
 
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @ManyToOne(cascade = CascadeType.ALL)
     private User owner;
 
+
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "project_id", nullable = true)
     private Project project;
+
 }

@@ -6,6 +6,7 @@ import fil.adventural.microprojectmanagement.models.Project;
 import fil.adventural.microprojectmanagement.models.User;
 import fil.adventural.microprojectmanagement.repositories.ProjectRepository;
 import fil.adventural.microprojectmanagement.repositories.UserRepository;
+import fil.adventural.microprojectmanagement.tdo.ProjectDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,12 +97,9 @@ class ProjectServiceTest {
     void testUpdateProjectByProjectId_WillReturnTheUpdatedProject(){
         Project project = Project.builder().title("Hello bank").build();
 
-        //TODO Write test for update project
+        ProjectDto projectDto = ProjectDto.builder().title("Hello bank").build();
 
-        //given(projectRepository.save(project)).willReturn(project);
-
-        //assertThat(projectService.updateProject(projectMapper.mapProjectToProjectDto(project))).isEqualTo(projectMapper.mapProjectToProjectDto(project));
-
+        assertThat(projectService.updateProject(projectMapper.mapProjectToProjectDto(project))).isEqualTo(projectMapper.mapProjectToProjectDto(project));
     }
 
     @Test

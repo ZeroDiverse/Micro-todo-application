@@ -25,10 +25,11 @@ public class User {
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "project_member",
-            joinColumns = @JoinColumn(name = "member_id"),
+            joinColumns = @JoinColumn(name = "member_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
     private List<Project> projects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Task> personalTasks = new ArrayList<>();
 }
