@@ -8,7 +8,24 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:8080/api/v1/projects
+POST http://localhost:8080/api/v1/users/2/projects
+Content-Type: application/json
+
+{
+  "title": "Test",
+  "description": "Test is funny"
+}
+
+###
+POST http://localhost:8080/api/v1/users/2/addMember/projects/3
+Content-Type: application/json
+
+{
+  "id": 1
+}
+
+###
+PATCH http://localhost:8080/api/v1/users/1/projects
 Content-Type: application/json
 
 {

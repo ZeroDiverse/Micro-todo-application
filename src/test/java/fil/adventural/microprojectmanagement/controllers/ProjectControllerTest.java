@@ -1,8 +1,11 @@
 package fil.adventural.microprojectmanagement.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fil.adventural.microprojectmanagement.exceptions.UserAlreadyInProjectException;
+import fil.adventural.microprojectmanagement.exceptions.UserNotAllowedException;
 import fil.adventural.microprojectmanagement.services.ProjectService;
 import fil.adventural.microprojectmanagement.tdo.ProjectDto;
+import fil.adventural.microprojectmanagement.tdo.UserRequest;
 import fil.adventural.microprojectmanagement.tdo.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -114,10 +119,10 @@ class ProjectControllerTest {
 
     @Test
     void testUpdateProject_WillGetAnUpdatedProjectInResponse() throws Exception {
-        given(projectService.updateProject(testProjects.get(0))).willReturn(testProjects.get(0));
+        given(projectService.updateProject(1L, testProjects.get(0))).willReturn(testProjects.get(0));
 
         MvcResult result = mockMvc
-                .perform(patch("/api/v1/projects")
+                .perform(patch("/api/v1/users/1/projects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(asJsonString(testProjects.get(0))))
@@ -130,6 +135,46 @@ class ProjectControllerTest {
     }
 
     @Test
+    void testAddMemberToProject_WillReturnStatusOk_IfMemberWasAdded() throws Exception {
+        doNothing().when(projectService).addMemberToProject(1L, 1L, 2L);
+
+        mockMvc
+                .perform(post("/api/v1/users/1/addMember/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(UserRequest.builder().id(2L).build())))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    @Test
+    void testAddMemberToProject_WillReturnStatusNotAllow_IfUserIsNotAllowed() throws Exception {
+        doThrow(new UserNotAllowedException()).when(projectService).addMemberToProject(1L, 1L, 2L);
+
+        mockMvc
+                .perform(post("/api/v1/users/1/addMember/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(UserRequest.builder().id(2L).build())))
+                .andExpect(status().is(HttpStatus.FORBIDDEN.value()))
+                .andReturn();
+    }
+
+    @Test
+    void testAddMemberToProject_WillReturnStatusNotAcceptable_IfUserIsAlreadyInProject() throws Exception {
+        doThrow(new UserAlreadyInProjectException()).when(projectService).addMemberToProject(1L, 1L, 2L);
+
+        mockMvc
+                .perform(post("/api/v1/users/1/addMember/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(UserRequest.builder().id(2L).build())))
+                .andExpect(status().is(HttpStatus.NOT_ACCEPTABLE.value()))
+                .andReturn();
+    }
+
+
+    @Test
     void testDeleteProjectById_WillReturnAStatusOfNoContent() throws Exception {
         given(projectService.deleteProjectById(anyLong())).willReturn(true);
 
@@ -138,6 +183,18 @@ class ProjectControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.NO_CONTENT.value()))
+                .andReturn();
+    }
+
+    @Test
+    void testDeleteProjectById_AndProjectNotExists_WillReturnAStatusOfNotFound() throws Exception {
+        given(projectService.deleteProjectById(anyLong())).willReturn(false);
+
+        mockMvc
+                .perform(delete("/api/v1/projects/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
                 .andReturn();
     }
 

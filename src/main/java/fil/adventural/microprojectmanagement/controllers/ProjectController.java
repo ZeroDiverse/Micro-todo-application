@@ -2,8 +2,8 @@ package fil.adventural.microprojectmanagement.controllers;
 
 import fil.adventural.microprojectmanagement.models.Project;
 import fil.adventural.microprojectmanagement.services.ProjectService;
-import fil.adventural.microprojectmanagement.services.UserService;
 import fil.adventural.microprojectmanagement.tdo.ProjectDto;
+import fil.adventural.microprojectmanagement.tdo.UserRequest;
 import fil.adventural.microprojectmanagement.tdo.UserResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,27 +30,33 @@ public class ProjectController {
     }
 
     @GetMapping(value = {"/projects/{projectId}/members", "/projects/{projectId}/members/"})
-    public ResponseEntity<List<UserResponse>> getMembers_ByProjectId(@PathVariable Long projectId){
+    public ResponseEntity<List<UserResponse>> getMembers_ByProjectId(@PathVariable Long projectId) {
         return ResponseEntity.status(HttpStatus.OK).body(projectService.findMembers_ByProjectId(projectId));
     }
 
     @PostMapping(value = {"/users/{userId}/projects", "/users/{userId}/projects"})
-    public ResponseEntity<Long> createProjectByUserId(@RequestBody Project project, @PathVariable Long userId){
+    public ResponseEntity<Long> createProjectByUserId(@RequestBody Project project, @PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectService.saveProject_ByUserId(project, userId));
     }
 
-    @PatchMapping(value = {"/projects", "/projects/"})
-    public ResponseEntity<ProjectDto> updateProject(@RequestBody ProjectDto projectDto){
-        return ResponseEntity.status(HttpStatus.OK).body(projectService.updateProject(projectDto));
+    @PostMapping(value = {"/users/{userId}/addMember/projects/{projectId}", "/users/{userId}/addMember/projects/{projectId}/"})
+    public ResponseEntity<Void> addMemberToProject(@PathVariable Long userId, @PathVariable Long projectId, @RequestBody UserRequest userRequest) {
+        System.out.println(userRequest);
+        projectService.addMemberToProject(projectId, userId, userRequest.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping(value = {"/users/{userId}/projects", "/users/{userId}/projects/"})
+    public ResponseEntity<ProjectDto> updateProject(@PathVariable Long userId, @RequestBody ProjectDto projectDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(projectService.updateProject(userId, projectDto));
     }
 
     @DeleteMapping(value = {"/projects/{projectId}", "/projects/{projectId}/"})
-    public ResponseEntity<Void> deleteProjectById(@PathVariable Long projectId){
+    public ResponseEntity<Void> deleteProjectById(@PathVariable Long projectId) {
         boolean res = projectService.deleteProjectById(projectId);
-        if(res){
-            return new  ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        else{
+        if (res) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

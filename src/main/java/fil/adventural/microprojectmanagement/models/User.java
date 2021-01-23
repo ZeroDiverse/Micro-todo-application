@@ -32,4 +32,22 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Task> personalTasks = new ArrayList<>();
+
+    /**
+     * Add project to user's projects
+     * @param project the project to be added
+     */
+    @Transient
+    public void addProject(Project project) {
+        projects.add(project);
+    }
+
+    /**
+     * Remove project from user's projects
+     * @param project the project to be removed
+     */
+    @Transient
+    public void removeProject(Project project) {
+        projects.remove(project);
+    }
 }

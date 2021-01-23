@@ -23,8 +23,28 @@ import static org.assertj.core.api.Assertions.assertThat;
      }
 
      @Test
-     void testProject_WillHaveZeroInitialTasks() {
-         //assertThat(project.getSharedTasks().size()).isZero();
+     void testProjectAddMember_WillAddMemberToItsMembers() {
+         assertThat(project.getMembers().size()).isZero();
+         project.addMember(user);
+         assertThat(project.getMembers().size()).isEqualTo(1);
      }
 
-}
+     @Test
+     void testProjectRemoveMember_WillAddMemberToItsMembers() {
+         project.addMember(user);
+         assertThat(project.getMembers().size()).isEqualTo(1);
+         project.removeMember(user);
+         assertThat(project.getMembers().size()).isZero();
+     }
+
+     @Test
+     void testProjectContainsMember_WillReturnTrue_IfUserInProject(){
+         project.addMember(user);
+         assertThat(project.containsMember(user)).isTrue();
+     }
+
+     @Test
+     void testProjectContainsMember_WillReturnFalse_IfUserNotInProject(){
+         assertThat(project.containsMember(user)).isFalse();
+     }
+ }
