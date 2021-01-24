@@ -47,8 +47,12 @@ public class ProjectService {
 
     public ProjectDto findProjectById_ByUserId(long projectId, long userId) {
         try {
-            return projectMapper.mapProjectToProjectDto(projectRepository.findProjectById_ByUserId(projectId, userId));
+            //Find the project by id by user id
+            Project projectFound = projectRepository.findProjectById_ByUserId(projectId, userId);
+            //Map project to project dto
+            return projectMapper.mapProjectToProjectDto(projectFound);
         } catch (EntityNotFoundException e) {
+            //Throw
             throw new ProjectNotFoundException();
         }
     }
@@ -70,6 +74,7 @@ public class ProjectService {
         //Get user
         User user = userOptional.get();
 
+        //Add user to project and give project member
         user.getProjects().add(project);
 
         project.getMembers().add(user);
@@ -101,17 +106,21 @@ public class ProjectService {
             throw new UserNotFoundException();
         }
 
-        Project oldProject = projectRepository.getOne(projectDto.getId());
+        try {
+            Project oldProject = projectRepository.getOne(projectDto.getId());
 
-        if (!oldProject.getMembers().contains(userOptional.get())) {
-            throw new UserNotAllowedException();
+            if (!oldProject.getMembers().contains(userOptional.get())) {
+                throw new UserNotAllowedException();
+            }
+
+            Project project = projectMapper.mapProjectDtoToProject(projectDto);
+
+            project = projectRepository.save(project);
+
+            return projectMapper.mapProjectToProjectDto(project);
+        } catch (EntityNotFoundException e) {
+            throw new ProjectNotFoundException();
         }
-
-        Project project = projectMapper.mapProjectDtoToProject(projectDto);
-
-        project = projectRepository.save(project);
-
-        return projectMapper.mapProjectToProjectDto(project);
     }
 
     /**

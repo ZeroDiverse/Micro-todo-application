@@ -2,9 +2,9 @@ package fil.adventural.microprojectmanagement.models;
 
 import org.junit.jupiter.api.Test;
 
-public class UserProjectRoleTest {
+class UserProjectRoleTest {
     @Test
-    public void testUserProjectRole_WillReturnCorrectName(){
+    void testUserProjectRole_WillReturnCorrectName() {
 
     }
 

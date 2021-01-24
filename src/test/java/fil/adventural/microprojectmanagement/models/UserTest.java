@@ -1,22 +1,23 @@
 package fil.adventural.microprojectmanagement.models;
 
+import fil.adventural.microprojectmanagement.exceptions.UserNotInProjectException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
- class UserTest {
+class UserTest {
+    private User user;
+    private Project project;
 
-     private User user;
-     private Project project;
+    @BeforeEach
+    public void init() {
+        user = new User();
+        project = new Project();
+    }
 
-     @BeforeEach
-     public void init() {
-         user = new User();
-         project = new Project();
-     }
-
-     @Test
+    @Test
      void testUser_HasZeroProjects_AtBeginning() {
          assertThat(user.getProjects().size()).isZero();
      }
@@ -41,8 +42,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
      @Test
      void testUserRemoveProjectWillFailIfProjectNotInInUsersProjects() {
-         //user.removeProject(project);
-         assertThat(0).isZero();
-         //assertThat(user.getProjects().size()).is(0);
+         assertThrows(UserNotInProjectException.class, () -> user.removeProject(project));
      }
  }

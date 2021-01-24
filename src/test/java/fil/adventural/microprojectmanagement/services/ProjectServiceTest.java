@@ -145,7 +145,14 @@ class ProjectServiceTest {
 
     @Test
     void testUpdateProjectByProjectId_WillThrowProjectNotFoundException_IfProjectNotExist() {
-        //TODO
+
+        Optional<User> userOptional = Optional.of(user);
+
+        given(userRepository.findById(anyLong())).willReturn(userOptional);
+
+        given(projectRepository.getOne(projectDto.getId())).willThrow(new EntityNotFoundException());
+
+        assertThrows(ProjectNotFoundException.class, () -> projectService.updateProject(anyLong(), projectDto));
     }
 
 
@@ -217,7 +224,6 @@ class ProjectServiceTest {
 
     @Test
     void testRemoveMemberForProject_WillNotHaveError_IfEverythingOk() {
-
         project.setMembers(new ArrayList<>());
 
         user.setProjects(new ArrayList<>());
@@ -227,6 +233,8 @@ class ProjectServiceTest {
         project.addMember(user1);
 
         user.addProject(project);
+
+        user1.addProject(project);
 
         given(projectRepository.getOne(anyLong())).willReturn(project);
 

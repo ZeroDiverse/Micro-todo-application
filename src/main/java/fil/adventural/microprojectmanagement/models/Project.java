@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +21,19 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Size(min = 1, max = 100)
     private String title;
 
-    private String color;
+    @Column(name = "color", columnDefinition = "VARCHAR(50) default '#6800fa'")
+    @Builder.Default
+    private String color = "#6800fa";
 
-    private boolean isFavourite;
+    @Builder.Default
+    private boolean isFavourite = false;
 
     @Enumerated(value = EnumType.STRING)
+    @Builder.Default
     private ProjectView projectView = ProjectView.LIST;
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST},

@@ -249,6 +249,11 @@ class ProjectControllerTest {
                 .andReturn();
     }
 
+    /**
+     * Change object to json string
+     * @param obj the object
+     * @return the json of object
+     */
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

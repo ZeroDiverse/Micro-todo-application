@@ -17,11 +17,11 @@ class ProjectDtoTest {
     @BeforeEach
     void setUp() {
         project = Project.builder().id(1L).title("Test").projectView(ProjectView.LIST).isFavourite(true).color("white").members(new ArrayList<>()).build();
+        projectDto = ProjectDto.builder().id(1L).title("Test").projectView(ProjectView.LIST).isFavourite(true).color("white").build();
     }
 
     @Test
     void testProjectDto_WillHaveTheSameDetailAsProject() {
-        projectDto = ProjectDto.builder().id(1L).title("Test").projectView(ProjectView.LIST).isFavourite(true).color("white").build();
         assertThat(projectDto.getId()).isEqualTo(project.getId());
         assertThat(projectDto.getTitle()).isEqualTo(project.getTitle());
         assertThat(projectDto.getProjectView()).isEqualTo(project.getProjectView());

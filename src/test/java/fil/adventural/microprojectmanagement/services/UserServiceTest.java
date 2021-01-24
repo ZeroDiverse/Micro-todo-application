@@ -12,12 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -33,9 +30,12 @@ class UserServiceTest {
 
     private UserService userService;
 
+    private User user;
+
     @BeforeEach
     void setUp() {
         userService = new UserService(userRepository, userMapper);
+        user = User.builder().build();
     }
 
     @Test
@@ -50,8 +50,6 @@ class UserServiceTest {
 
     @Test
     void testFindUserByEmail_WillReturnUserDetails() {
-
-        User user = User.builder().build();
 
         given(userRepository.findUserByEmail(anyString())).willReturn(user);
 

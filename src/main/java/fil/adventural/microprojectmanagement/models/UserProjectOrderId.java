@@ -9,11 +9,12 @@ import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode
+@Embeddable
 public class UserProjectOrderId implements Serializable {
     @Column(name = "user_id")
-    private Long user;
+    private Long userId;
     @Column(name = "project_id")
-    private Long project;
+    private Long projectId;
 
     // getters/setters and most importantly equals() and hashCode()
 }

@@ -1,5 +1,6 @@
 package fil.adventural.microprojectmanagement.models;
 
+import fil.adventural.microprojectmanagement.exceptions.UserNotInProjectException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,6 +49,9 @@ public class User {
      */
     @Transient
     public void removeProject(Project project) {
+        if (!projects.contains(project)) {
+            throw new UserNotInProjectException();
+        }
         projects.remove(project);
     }
 }

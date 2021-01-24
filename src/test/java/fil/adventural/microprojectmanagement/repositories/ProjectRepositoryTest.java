@@ -2,6 +2,7 @@ package fil.adventural.microprojectmanagement.repositories;
 
 import fil.adventural.microprojectmanagement.models.Project;
 import fil.adventural.microprojectmanagement.models.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,29 +27,32 @@ class ProjectRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
 
+    private User user;
+
+    private Project project;
+
+    @BeforeEach
+    void setUp() {
+        user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
+        project = Project.builder().title("test").members(new ArrayList<>()).build();
+    }
+
     @Test
     void testFindByUserEmail_WillReturnAllProjectOfThatUser() {
-        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
-
-        entityManager.persist(user);
-
-        Project project = Project.builder().title("test").isFavourite(true).members(Collections.singletonList(user)).build();
+        user = entityManager.persist(user);
 
         user.getProjects().add(project);
+
+        project.getMembers().add(user);
 
         project = entityManager.persist(project);
 
         assertThat(projectRepository.findProjectsByUserEmail(user.getEmail())).isEqualTo(Collections.singletonList(project));
     }
 
-
     @Test
     void testFindByUserId_WillReturnAllProjectOfThatUser() {
-        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
-
         user = entityManager.persist(user);
-
-        Project project = Project.builder().title("test").isFavourite(true).members(Collections.singletonList(user)).build();
 
         user.getProjects().add(project);
 
@@ -59,11 +63,7 @@ class ProjectRepositoryTest {
 
     @Test
     void testFindProjectById_ByUserId_WillReturnAllProjectOfThatUser() {
-        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
-
         user = entityManager.persist(user);
-
-        Project project = Project.builder().title("test").isFavourite(true).members(Collections.singletonList(user)).build();
 
         user.getProjects().add(project);
 
@@ -74,15 +74,11 @@ class ProjectRepositoryTest {
 
     @Test
     void testAddMemberToProject() {
-        User user = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
-
         entityManager.persist(user);
 
         User user1 = User.builder().email("test@gmail.com").projects(new ArrayList<>()).isEnabled(true).build();
 
         entityManager.persist(user1);
-
-        Project project = Project.builder().title("test").isFavourite(true).members(new ArrayList<>()).build();
 
         project.addMember(user);
 
@@ -98,4 +94,11 @@ class ProjectRepositoryTest {
         assertThat(userRepository.getOne(user1.getId()).getProjects()).contains(project);
     }
 
+    @Test
+    void testAddProject_WillHaveDefaultColorAndDefaultIsFavouriteOfFalse(){
+        //Need to have builder default since builder not going to take default value
+        project = entityManager.persist(project);
+        assertThat(project.isFavourite()).isFalse();
+        assertThat(project.getColor()).isEqualTo("#6800fa");
+    }
 }
