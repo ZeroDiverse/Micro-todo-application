@@ -60,10 +60,10 @@ public class ProjectService {
     /**
      * Create thr project by user id
      *
-     * @param project project to be created
+     * @param projectDto project dto to be created
      * @return the id of created project
      */
-    public Long saveProject_ByUserId(Project project, Long userId) {
+    public Long saveProject_ByUserId(ProjectDto projectDto, Long userId) {
         //Get user optional
         Optional<User> userOptional = userRepository.findById(userId);
 
@@ -73,6 +73,8 @@ public class ProjectService {
 
         //Get user
         User user = userOptional.get();
+
+        Project project = projectMapper.mapProjectDtoToProject(projectDto);
 
         //Add user to project and give project member
         user.getProjects().add(project);

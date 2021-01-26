@@ -3,59 +3,65 @@ package fil.adventural.microprojectmanagement.models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectTest {
 
-    private Project project;
+    private Project mockProject;
 
     private User user;
 
+    private Task mockTask;
+
+
     @BeforeEach
     public void init() {
-        project = new Project();
+        mockProject = new Project();
         user = User.builder().username("Funny dude").build();
+        mockTask = Task.builder().build();
     }
 
      @Test
      void testProject_WillHaveInitialProjectView_OfList() {
-         assertThat(project.getProjectView()).isEqualTo(ProjectView.LIST);
+         assertThat(mockProject.getProjectView()).isEqualTo(ProjectView.LIST);
      }
 
      @Test
      void testProjectAddMember_WillAddMemberToItsMembers() {
-         assertThat(project.getMembers().size()).isZero();
-         project.addMember(user);
-         assertThat(project.getMembers().size()).isEqualTo(1);
+         assertThat(mockProject.getMembers().size()).isZero();
+         mockProject.addMember(user);
+         assertThat(mockProject.getMembers().size()).isEqualTo(1);
      }
 
      @Test
      void testProjectRemoveMember_WillAddMemberToItsMembers() {
-         project.addMember(user);
-         assertThat(project.getMembers().size()).isEqualTo(1);
-         project.removeMember(user);
-         assertThat(project.getMembers().size()).isZero();
+         mockProject.addMember(user);
+         assertThat(mockProject.getMembers().size()).isEqualTo(1);
+         mockProject.removeMember(user);
+         assertThat(mockProject.getMembers().size()).isZero();
      }
 
     @Test
     void testProjectContainsMember_WillReturnTrue_IfUserInProject() {
-        project.addMember(user);
-        assertThat(project.containsMember(user)).isTrue();
+        mockProject.addMember(user);
+        assertThat(mockProject.containsMember(user)).isTrue();
     }
 
     @Test
     void testProjectContainsMember_WillReturnFalse_IfUserNotInProject() {
-        assertThat(project.containsMember(user)).isFalse();
+        assertThat(mockProject.containsMember(user)).isFalse();
     }
 
     @Test
     void testProjectCreate_WillHaveInitialColorOfHex6800fa() {
-        assertThat(project.getColor()).isEqualTo("#6800fa");
+        assertThat(mockProject.getColor()).isEqualTo("#6800fa");
     }
 
     @Test
     void testProjectCreate_WillHaveInitialIsFavoriteOfFalse() {
-        assertThat(project.isFavourite()).isFalse();
+        assertThat(mockProject.isFavourite()).isFalse();
     }
 
     @Test
@@ -74,6 +80,20 @@ class ProjectTest {
     void testProjectBuilder_WillHaveInitialProjectView_OfList() {
         Project project = Project.builder().build();
         assertThat(project.getProjectView()).isEqualTo(ProjectView.LIST);
+    }
+
+    @Test
+    void testProjectBuilder_WillHaveDefaultMembersAndTasksOfEmptyArrayList(){
+        Project project = Project.builder().build();
+        assertThat(project.getMembers()).isEqualTo(new ArrayList<>());
+        assertThat(project.getProjectTasks()).isEqualTo(new ArrayList<>());
+    }
+
+    @Test
+    void testAddTaskToProject_WillAddTaskToProjectTasks(){
+        mockProject.addTask(mockTask);
+        assertThat(mockTask.getProject()).isEqualTo(mockProject);
+        assertThat(mockProject.getProjectTasks()).contains(mockTask);
     }
 
 }

@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.Arrays;
 import java.util.List;
 
+import static fil.adventural.microprojectmanagement.utils.JsonUtils.asJsonString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -87,7 +88,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void testCreatProject_WillReturnStatusOfOkAndBodyOfCreatedProjectId() throws Exception {
+    void testCreateProject_WillReturnStatusOfOkAndBodyOfCreatedProjectId() throws Exception {
         given(projectService.saveProject_ByUserId(any(), anyLong())).willReturn(1L);
 
         MvcResult result = mockMvc
@@ -119,7 +120,7 @@ class ProjectControllerTest {
 
     @Test
     void testUpdateProject_WillGetAnUpdatedProjectInResponse() throws Exception {
-        given(projectService.updateProject(1L, testProjects.get(0))).willReturn(testProjects.get(0));
+        given(projectService.updateProject(anyLong(), any())).willReturn(testProjects.get(0));
 
         MvcResult result = mockMvc
                 .perform(patch("/api/v1/users/1/projects")
@@ -136,7 +137,7 @@ class ProjectControllerTest {
 
     @Test
     void testAddMemberToProject_WillReturnStatusOk_IfMemberWasAdded() throws Exception {
-        doNothing().when(projectService).addMemberToProject(1L, 1L, 2L);
+        doNothing().when(projectService).addMemberToProject(anyLong(), anyLong(), anyLong());
 
         mockMvc
                 .perform(post("/api/v1/users/1/addMember/projects/1")
@@ -149,7 +150,7 @@ class ProjectControllerTest {
 
     @Test
     void testAddMemberToProject_WillReturnStatusNotAllow_IfUserIsNotAllowed() throws Exception {
-        doThrow(new UserNotAllowedException()).when(projectService).addMemberToProject(1L, 1L, 2L);
+        doThrow(new UserNotAllowedException()).when(projectService).addMemberToProject(anyLong(), anyLong(), anyLong());
 
         mockMvc
                 .perform(post("/api/v1/users/1/addMember/projects/1")
@@ -162,7 +163,7 @@ class ProjectControllerTest {
 
     @Test
     void testAddMemberToProject_WillReturnStatusNotAcceptable_IfUserIsAlreadyInProject() throws Exception {
-        doThrow(new UserAlreadyInProjectException()).when(projectService).addMemberToProject(1L, 1L, 2L);
+        doThrow(new UserAlreadyInProjectException()).when(projectService).addMemberToProject(anyLong(), anyLong(), anyLong());
 
         mockMvc
                 .perform(post("/api/v1/users/1/addMember/projects/1")
@@ -176,7 +177,7 @@ class ProjectControllerTest {
 
     @Test
     void testRemoveMemberToProject_WillReturnStatusOk_IfMemberWasAdded() throws Exception {
-        doNothing().when(projectService).removeMemberFromProject(1L, 1L, 2L);
+        doNothing().when(projectService).removeMemberFromProject(anyLong(), anyLong(), anyLong());
 
         mockMvc
                 .perform(post("/api/v1/users/1/removeMember/projects/1")
@@ -189,7 +190,7 @@ class ProjectControllerTest {
 
     @Test
     void testRemoveMemberToProject_WillReturnStatusNotAllow_IfUserIsNotAllowed() throws Exception {
-        doThrow(new UserNotAllowedException()).when(projectService).removeMemberFromProject(1L, 1L, 2L);
+        doThrow(new UserNotAllowedException()).when(projectService).removeMemberFromProject(anyLong(), anyLong(), anyLong());
 
         mockMvc
                 .perform(post("/api/v1/users/1/removeMember/projects/1")
@@ -202,7 +203,7 @@ class ProjectControllerTest {
 
     @Test
     void testRemoveToProject_WillReturnStatusNotAcceptable_IfUserIsAlreadyInProject() throws Exception {
-        doThrow(new UserAlreadyInProjectException()).when(projectService).removeMemberFromProject(1L, 1L, 2L);
+        doThrow(new UserAlreadyInProjectException()).when(projectService).removeMemberFromProject(anyLong(), anyLong(), anyLong());
 
         mockMvc
                 .perform(post("/api/v1/users/1/removeMember/projects/1")
@@ -247,18 +248,5 @@ class ProjectControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.NOT_FOUND.value()))
                 .andReturn();
-    }
-
-    /**
-     * Change object to json string
-     * @param obj the object
-     * @return the json of object
-     */
-    private static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }
