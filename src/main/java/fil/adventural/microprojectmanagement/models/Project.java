@@ -38,10 +38,12 @@ public class Project {
 
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST},
             mappedBy = "projects")
+    @Builder.Default
     private List<User> members = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private List<Task> sharedTasks = new ArrayList<>();
+    @Builder.Default
+    private List<Task> projectTasks = new ArrayList<>();
 
     /**
      * Add member to project
@@ -69,5 +71,14 @@ public class Project {
     @Transient
     public boolean containsMember(User user) {
         return members.contains(user);
+    }
+
+    /**
+     * Add task to project tasks
+     * @param task task to be added
+     */
+    public void addTask(Task task) {
+        projectTasks.add(task);
+        task.setProject(this);
     }
 }

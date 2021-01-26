@@ -10,11 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UserTest {
     private User user;
     private Project project;
+    private Task task;
 
     @BeforeEach
     public void init() {
         user = new User();
         project = new Project();
+        task = new Task();
     }
 
     @Test
@@ -44,4 +46,19 @@ class UserTest {
      void testUserRemoveProjectWillFailIfProjectNotInInUsersProjects() {
          assertThrows(UserNotInProjectException.class, () -> user.removeProject(project));
      }
+
+    @Test
+    void testUserAddTask_SoPersonalTaskWillHaveOneTask() {
+        user.addTask(task);
+        assertThat(user.getPersonalTasks().size()).isEqualTo(1);
+        assertThat(task.getOwner()).isEqualTo(user);
+    }
+
+    @Test
+    void testUserRemoveTask_SoPersonalTaskWillHaveOneTask() {
+        user.addTask(task);
+        user.removeTask(task);
+        assertThat(user.getPersonalTasks().size()).isZero();
+        assertThat(task.getOwner()).isNull();
+    }
  }

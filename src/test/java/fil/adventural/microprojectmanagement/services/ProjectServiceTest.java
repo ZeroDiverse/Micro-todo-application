@@ -36,17 +36,16 @@ import static org.mockito.Mockito.doNothing;
 @MockitoSettings
 class ProjectServiceTest {
 
+    private ProjectService projectService;
+
     @Mock
     private ProjectRepository projectRepository;
-
-    private ProjectService projectService;
 
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private ProjectMapper projectMapper;
-
 
     @Mock
     private UserMapper userMapper;
@@ -111,7 +110,9 @@ class ProjectServiceTest {
 
         given(projectRepository.save(project)).willReturn(project);
 
-        assertThat(projectService.saveProject_ByUserId(project, user.getId())).isEqualTo(project.getId());
+        given(projectMapper.mapProjectDtoToProject(projectDto)).willReturn(project);
+
+        assertThat(projectService.saveProject_ByUserId(projectDto, user.getId())).isEqualTo(project.getId());
     }
 
     @Test

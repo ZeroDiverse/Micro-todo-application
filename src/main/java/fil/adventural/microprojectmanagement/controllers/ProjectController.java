@@ -35,8 +35,8 @@ public class ProjectController {
     }
 
     @PostMapping(value = {"/users/{userId}/projects", "/users/{userId}/projects"})
-    public ResponseEntity<Long> createProjectByUserId(@RequestBody Project project, @PathVariable Long userId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.saveProject_ByUserId(project, userId));
+    public ResponseEntity<Long> createProjectByUserId(@RequestBody ProjectDto projectDto, @PathVariable Long userId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projectService.saveProject_ByUserId(projectDto, userId));
     }
 
     @PostMapping(value = {"/users/{userId}/addMember/projects/{projectId}", "/users/{userId}/addMember/projects/{projectId}/"})

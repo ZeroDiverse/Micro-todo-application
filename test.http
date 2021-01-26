@@ -1,4 +1,27 @@
 ###
+GET http://localhost:8080/api/v1/users/1/personalTasks
+
+###
+POST http://localhost:8080/api/v1/users/1/personalTasks
+Content-Type: application/json
+
+{
+  "title": "Test"
+}
+
+###
+PATCH http://localhost:8080/api/v1/users/1/personalTasks
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "Java is god"
+}
+
+###
+DELETE http://localhost:8080/api/v1/users/1/personalTasks/3
+
+###
 GET http://localhost:8080/api/v1/users/1/projects
 
 ###
@@ -12,8 +35,7 @@ POST http://localhost:8080/api/v1/users/1/projects
 Content-Type: application/json
 
 {
-"title": "Test",
-"description": "Test is funny"
+"title": "Test"
 }
 
 ###
@@ -21,8 +43,7 @@ POST http://localhost:8080/api/v1/users/2/projects
 Content-Type: application/json
 
 {
-  "title": "Test",
-  "description": "Test is funny"
+  "title": "Test"
 }
 
 ###
@@ -46,9 +67,7 @@ PATCH http://localhost:8080/api/v1/users/1/projects
 Content-Type: application/json
 
 {
-  "id": "1",
-  "title": "Testing",
-  "description": "Test is funny"
+  "id": "1"
 }
 
 ###

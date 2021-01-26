@@ -1,9 +1,8 @@
 package fil.adventural.microprojectmanagement.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -19,16 +18,18 @@ public class Task {
 
     private String title;
 
-    private String description;
-
-    private boolean isPersonal;
-
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JoinColumn(name = "user_id")
     private User owner;
 
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinColumn(name = "project_id")
     private Project project;
+
+    @Override
+    public String toString() {
+        return "Task [id=" + id + ", title=" + title + "]";
+    }
 
 }
